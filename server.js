@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 
 // Routes
-app.get("/getConfig", async function (req, res) {
+app.get("/getConfig", async function (req, res, next) {
   const { clientId } = req.query;
   // Find the config for that particular clientId
   const clientConfig = Config.getClientConfig(clientId);
@@ -20,13 +20,13 @@ app.get("/getConfig", async function (req, res) {
       message: `Config not found for this clientId: ${clientId}`,
       clientConfig: null,
     });
+  } else {
+    res.status(200).json({
+      success: true,
+      message: `Config found for this clientId: ${clientId}`,
+      clientConfig: clientConfig,
+    });
   }
-
-  res.status(200).json({
-    success: true,
-    message: `Config found for this clientId: ${clientId}`,
-    clientConfig: clientConfig,
-  });
 });
 
 // Run server
